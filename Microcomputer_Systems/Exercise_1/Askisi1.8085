@@ -1,0 +1,14 @@
+START:
+MVI C,08H   
+LDA 2000H   
+L2:         
+RAL         
+JC L1       
+DCR C      
+JNZ L2      
+L1:     
+MOV A,C     
+CMA       
+STA 3000H   
+JMP START   
+END

@@ -1,0 +1,33 @@
+START:
+IN 10H
+LXI B,0244H       
+MVI E,01H 
+             
+MAIN:
+LDA 2000H   
+MOV D,A                 
+RAR         
+JC MAIN               
+MOV A,D  
+CALL DELB    
+RAL         
+JNC LOOP_R 
+ 
+LOOP_L:      
+MOV A,E     
+CMA         
+STA 3000H   
+CMA         
+RLC         
+MOV E,A     
+JMP MAIN 
+   
+LOOP_R:     
+MOV A,E
+CMA
+STA 3000H
+CMA
+RRC         
+MOV E,A
+JMP MAIN
+END

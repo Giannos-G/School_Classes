@@ -1,0 +1,33 @@
+LXI B,01F4H  
+ 
+START:
+LDA 2000H     
+CPI 63H        
+JNC EKATONT     
+MVI D,FFH  
+   
+DECADES:
+INR D         
+SUI 0AH       
+JNC DECA      
+ADI 0AH       
+MOV E,A       
+MOV A,D       
+RLC            
+RLC              
+RLC
+RLC
+ADD E          
+CMA           
+STA 3000H     
+JMP START 
+    
+EKATONT:        
+MVI A,F0H     
+STA 3000H      
+CALL DELB    
+CMA           
+STA 3000H     
+CALL DELB     
+JMP START     
+END

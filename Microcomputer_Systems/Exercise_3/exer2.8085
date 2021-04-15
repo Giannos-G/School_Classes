@@ -1,0 +1,79 @@
+MVI 	A,0DH			;A=0000 1101 arxikopoiisi maskas gia epilogi diakopis
+	SIM
+	EI			;energopoiisi diakopon
+MAIN:	
+	JMP MAIN		;epistrofi stin main mexris otou iparxei diakopi 
+INTR_ROUTINE:
+	IN 10H			;svisimo tis othonis ton 7-segment
+	MVI A,10H
+	STA 0B05H
+	STA 0B04H
+	STA 0B03H
+	STA 0B02H
+	STA 0B01H
+	STA 0B00H
+	LXI D,0B00H		;apothikeusi kenon xaraktiron
+	CALL STDM		;apothikeusi tou pros apeikonisi minimatos
+	CALL DCD		;apeikonisi minimatos
+	EI			;epanenergopoiisi ton diakopton
+	CALL KIND		;apothikeusi ston Â tis protis timis pou exei eisaxthei 
+	MOV B,A		;apo to pliktrologio
+	CALL KIND		;apothikeusi tis 2is ston A
+	LXI H,0B01H		;anaparastasi tou Â sto 2ï dexiotero 7-segment
+	MOV M,B	
+	LXI H,0B00H		;anaparastasi tou A sto amesos dexiotero 7-segment
+	MOV M,A
+	MOV C,A		;prosorini apothikeusi tou Á ston C
+	MVI A,10H		;apenergopoiisi ton 4 led
+	STA 0B05H
+	STA 0B04H
+	STA 0B03H
+	STA 0B02H
+	MOV A,C		;epanafora tis timis tou Á
+	LXI D,0B00H
+	CALL STDM
+	CALL DCD
+	
+	LDA 0B01H		;apothikeusi xana ton timon pou eixan oi Á,Â
+	MOV B,A
+	LDA 0B00H
+	
+	ANI 07H		;apomonosi ton 3LSB psifion Á
+	MOV C,A		;apothikeusi tous ston C
+	MOV A,B	
+	ANI 07H		;apomonosi ton 3LSB psifion B	
+	RLC			;peristrofi tous 5 fores oste na ginoun MSB
+	RLC
+	RLC
+	RLC
+	RLC
+	ORA C			;OR me ta 3LSB psifia tou Á gia na dimiourgithei o epithimitos arithmos kai na apothikeutei ston Á
+;Times ton B,C einai dikes mou gia elegxo apotelesmatos
+
+	MVI B,05H		;B=0000 0101	
+	MVI C,56H		;C=0101 0110
+	CMP B			;sigkrisi tou B me ton A
+	JC LOOP1		;mikroteros i isos LOOP1
+	JZ LOOP1
+	CMP C			;sigkrisi tou C me ton Á
+	JC LOOP2		;an einai mikroteros i isos LOOP1
+	JZ LOOP2
+	MVI A,FBH		;an den isxiei kanena apo ta parapano eimaste
+	STA 3000H		;stin teleutaia led
+	LXI B,00FAH
+	CALL DELB
+	JMP MAIN
+LOOP1:				;proti led
+
+	MVI A,FEH		;1111 1110
+	STA 3000H
+	LXI B,00FAH
+	CALL DELB
+	JMP MAIN
+LOOP2:				;deuteri led
+	MVI A,FDH		;1111 1101
+	STA 3000H
+	LXI B,00FAH
+	CALL DELB
+	JMP MAIN
+END
